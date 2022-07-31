@@ -1,0 +1,108 @@
+Problem Description:
+Given an integer A, which denotes the number of doors in a row numbered 1 to A. All the doors are closed initially.
+
+A person moves to and fro, changing the states of the doors as follows: the person opens a door that is already closed and closes a door that is already opened.
+
+In the first go, he/she alters the states of doors numbered 1, 2, 3, … , A.
+In the second go, he/she alters the states of doors numbered 2, 4, 6 ….
+In the third go, he/she alters the states of doors numbered 3, 6, 9 …
+This continues till the A'th go in, which you alter the state of the door numbered A.
+
+Find and return the number of open doors at the end of the procedure.
+
+Problem Constraints:
+1 <= A <= 109
+
+Input Format:
+The only argument given is integer A.
+
+Output Format:
+Return the number of open doors at the end of the procedure.
+
+Example Input:
+Input 1:
+
+ A = 5
+Input 2:
+
+ A = 6
+
+Example Output:
+Output 1:
+
+ 2
+Output 2:
+
+ 2 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Solution Code:
+public class Solution {
+    public int solve(int A) {
+        // corner cases
+        if(A <= 2) return A-1;
+
+        int[] spfArr = smallestPrimeFactors(A); int ans = 0;
+        // 'd' th door is altered by every factor of 'd'
+        // so door 'd' remains open only if it has odd no of factors
+        // any number except perfectsquare has even no of factors
+        // so only doors that are perfectsquares will remain open
+        for(int i=1; i <= A; i++)
+        {
+            int ifacts = countFactors(spfArr, i);
+            if(ifacts % 2 != 0) ans++;
+        }
+        return ans;
+    }
+
+    // calculates the no. of factors of a given number
+    public int countFactors(int[] spfArr, int n)
+    {
+        // lets do the prime factorization of n
+        // let n = (p1)^a * (p2)^b * (p3)^c where p1, p2, p3 are primes
+        // then no. of factors of n = (a+1) * (b+1) * (c+1)
+        int facts = 1;
+        while(n > 1)
+        {
+            int spf = spfArr[n];
+            int spfcount = 0;
+            while(n > 1 && n % spf == 0)
+            {
+                n = n/spf;
+                spfcount++;
+            }
+            facts *= spfcount + 1;            
+        }
+        return facts;
+    }
+
+    // Smallest Prime factor of any number <= given number can be known from the Array returned by this function
+    public int[] smallestPrimeFactors(int n)
+    {
+        // create an array of size n+1
+        int[] spfArr = new int[n+1];
+        for(int i=0; i <= n; i++)
+        {
+            spfArr[i] = i;
+        }
+
+        // for every prime, its multiples should have smallestPrimeFactor as that prime
+        for(int i=2; i*i <= n; i++)
+        {
+            if(spfArr[i] == i)
+            {
+                for(int j= i*i; j<= n; j+=i)
+                {
+                    spfArr[j] = Math.min(spfArr[j], i);
+                }
+            }
+        }
+        return spfArr;
+    }
+}
+
+    // TC: t1 + t2 = O(n (lg(lg n))) + O(nx)...n is the input given
+    // t1 = time taken by smallestPrimeFactors = O(n (lg(lg n)))
+    // t2 = time taken to countFactors for n numbers ~= n*O(x) = O(nx)  
+    // SC: space used to calculate spf array = O(n)
