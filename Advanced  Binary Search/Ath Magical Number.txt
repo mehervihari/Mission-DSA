@@ -1,0 +1,93 @@
+Q. Ath Magical Number
+
+Problem Description
+You are given three positive integers, A, B, and C.
+Any positive integer is magical if divisible by either B or C.
+Return the Ath smallest magical number. Since the answer may be very large, return modulo 109 + 7.
+
+Problem Constraints
+1 <= A <= 109
+2 <= B, C <= 40000
+
+Input Format
+The first argument given is an integer A.
+The second argument given is an integer B.
+The third argument given is an integer C.
+
+Output Format
+Return the Ath smallest magical number. Since the answer may be very large, return modulo 109 + 7.
+
+Example Input
+Input 1:
+ A = 1
+ B = 2
+ C = 3
+Input 2:
+ A = 4
+ B = 2
+ C = 3
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 6
+
+Explanation 1:
+ 1st magical number is 2.
+Explanation 2:
+ First four magical numbers are 2, 3, 4, 6 so the 4th magical number is 6.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Solution code:
+public class Solution {
+    public int solve(int a, int b, int c) {
+        // lower bound of search space is min(b, c)
+        // upper bound of search space is a * min(b, c)
+        long high = (long)a * Math.min(b, c);
+        long low = Math.min(b, c);
+        int mod = 1000000007;
+
+        if(a == 1) return (int)low;
+        return (bin_search(a, low, high, b, c)) % mod;
+    }
+
+    public int bin_search(int a, long low, long high, int b, int c)
+    {
+        int mod = 1000000007;
+        while(low <= high)
+        {
+            long mid = low + (high - low)/2;
+            long lcm = (long)(b * c) / (long)gcd(b, c);
+
+            // no.of magical numbers divisible by b that are lessthan a are a/b
+            // no. of magical numbers divisible by c that are lessthan a are a/c
+            // no. of magical numbers divisible by both b, c that are lessthan a are a/lcm(b, c)
+            // no. of magical numbers divisible by either b or c that are lessthan a are (a/b + a/c - a/lcm(b,c))
+            // hence the partition proposition...
+            if((int)(mid/b + mid/c - mid/lcm) < a)
+            // go to search in next half of the current search space
+                low = mid + (long)1;
+            // go to search in before half of the current search space
+            else high = mid - (long)1;
+        }
+
+        if(low < 0) low += mod;
+        return (int)(low % mod);
+    }
+
+    //Euclid's method
+    public int gcd(int a, int b)
+    {
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
+
+// TC = t2 * t1 (since gcd is calculated in every iteration of bin_search) 
+//    = O(lg(Max(a, b))) * O(lg n) = O(lg n * lg(Max(a, b))
+// t1 = time for binary search = O(lg n)
+// t2 = time for gcd = O(lg(Max(a, b)))
+
+// SC = no extra space = o(1)
