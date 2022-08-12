@@ -1,0 +1,87 @@
+Q. Hidden Pattern
+Problem Description
+Given two strings - a text A and a pattern B, having lower-case alphabetic characters. You have to determine the number of occurrences of pattern B in text A as its substring. i.e. the number of times B occurs as a substring in A.
+
+Problem Constraints
+1 <= |B| <= |A| <= 105
+
+Input Format
+First argument is a string A
+Second argument is a string B
+
+Output Format
+Return the number of occurrences.
+
+Example Input
+Input 1:
+ A = "abababa"
+ B = "aba" 
+Input 2:
+ A = "mississipi"
+ B = "ss" 
+Input 3:
+ A = "hello" 
+ B = "hi" 
+
+Example Output
+Output 1:
+ 3 
+Output 2:
+ 2 
+Output 3:
+ 0 
+
+Example Explanation
+Explanation 1:
+ A has 3 substrings equal to B - A[1, 3], A[3, 5] and A[5, 7] 
+
+Explanation 2:
+ B occurs two times in A - A[3, 4], A[6, 7]. 
+
+Explanation 3:
+ B does not occur in A as a substring. 
+
+---------------------------------------------------------------------------------------------------------------------------------
+Solution code:
+public class Solution {
+    // DO NOT MODIFY THE ARGUMENTS WITH "final" PREFIX. IT IS READ ONLY
+    public int solve(final String a, final String b) {
+        int n = a.length(), m = b.length();
+        // concatenate the pattern string to given string as follows
+        String temp = b + "$" + a;
+        // find the longest prefix suffix of the temp string formed
+        int[] lps = findLPS(temp); int count = 0;
+        for(int i=0; i< temp.length(); i++)
+        {
+            if(lps[i] == m) {
+                count++;
+            }
+        }
+        // number of substrings having lps equal = length of pattern string is the answer
+        return count;
+    }
+
+    // LPS = the longest prefix which is also a suffix, except for the entire string
+    // Example: for S = "abracadabracadabra" ; answer = 11;
+    // finds the LPS of every substring of given string
+    public int[] findLPS(String t)
+    {
+        int n = t.length();
+        int []lps = new int[n]; lps[0] = 0;
+        for(int i=1; i<n; i++)
+        {
+            int x = lps[i-1];
+            while(t.charAt(x) != t.charAt(i))
+            {
+                if(x == 0) { x = -1; break; }
+                x = lps[x-1];
+            }
+            lps[i] = x + 1; //System.out.print(lps[i] + " ");
+        }
+        return lps;
+    }
+}
+
+/// if n is the size of input
+/// TC = time taken to find LPS array = O(n)
+/// SC = for lps array = O(n)
