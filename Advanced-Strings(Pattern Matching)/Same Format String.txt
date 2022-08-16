@@ -1,0 +1,75 @@
+Q. Same Format String
+Problem Description
+Given two strings A and B. Check if B contains same characters as that of given string A and in the same order.
+
+Problem Constraints
+1: A and B contain only UPPERCASE Letters.
+2: No two consecutive characters are same in A.
+3: You can only use constant amount of extra memory.
+
+Input Format
+The first argument given is string A.
+The second argument given is string B.
+
+Output Format
+Return 1 if B contains same characters as that of given string A and in the same order else return 0.
+
+Example Input
+Input 1:
+    A = "HIRED" 
+    B = "HHHIIIRRRRREEEEEDDDDD"
+Input 2:
+    A = "HIRED"
+    B = "DDHHHHIIIIRRRRREEEEDDD"
+
+Example Output
+Output 1:
+    1
+Output 2:
+    0
+
+Example Explanation
+Explanation 1:
+    B has same characters and appear in same order.
+Explanation 2:
+    B has extra character "D"
+-----------------------------------------------------------------------------------------------------------------------------
+Solution code:
+public class Solution {
+    // DO NOT MODIFY THE ARGUMENTS WITH "final" PREFIX. IT IS READ ONLY
+    public int solve(final String a, final String b) {
+        int n = a.length(), m = b.length(); int j = 0;
+        // corner cases
+        if(n > m) return 0;
+        if(n == m && b.charAt(0) != a.charAt(0)) return 0;
+
+        for(int i=1; i <m; i++)
+        {
+            // checking the char of B with that of A, => when B's previous char is different from current one
+            if(b.charAt(i) != b.charAt(i-1))
+            {
+                if(b.charAt(i-1) == a.charAt(j))
+                {
+                    j++;
+                    // if we reached end of string A but not end of string B
+                    if(j == n && i <= m-1) return 0;
+                }
+                else return 0;
+            }
+            // special case when we are at the end of B
+            if(i == m-1){
+                if((j < n && b.charAt(i) != a.charAt(j)))
+                {
+                    return 0;
+                }
+            }
+        }
+        // if we have not reached the end of string A but reached end of B
+        if(j < n-1) return 0;
+        return 1;
+    }
+}
+
+/// n is length of given string
+/// TC = traverse the string once = O(n)
+/// SC = no extra space = O(1)
