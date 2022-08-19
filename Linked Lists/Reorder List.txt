@@ -1,0 +1,115 @@
+Q. Reorder List
+
+Problem Description
+Given a singly linked list A
+ A: A0 → A1 → … → An-1 → An 
+reorder it to:
+ A0 → An → A1 → An-1 → A2 → An-2 → … 
+You must do this in-place without altering the nodes' values.
+
+Problem Constraints
+1 <= |A| <= 106
+
+Input Format
+The first and the only argument of input contains a pointer to the head of the linked list A.
+
+Output Format
+Return a pointer to the head of the modified linked list.
+
+Example Input
+Input 1:
+ A = [1, 2, 3, 4, 5] 
+Input 2:
+ A = [1, 2, 3, 4] 
+
+Example Output
+Output 1:
+ [1, 5, 2, 4, 3] 
+Output 2:
+ [1, 4, 2, 3] 
+
+Example Explanation
+Explanation 1:
+ The array will be arranged to [A0, An, A1, An-1, A2].
+Explanation 2:
+ The array will be arranged to [A0, An, A1, An-1, A2].
+-------------------------------------------------------------------------------------------------------------------------------
+Solution code:
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode reorderList(ListNode a) {
+        // find middle node of the list
+        ListNode mid = findMidNode(a);
+
+        // reverse the 2nd half
+        ListNode h2 = mid.next;
+        mid.next = null;
+        h2 = reverseLL(h2);
+        ListNode h1 = a, h3 = a, link = a;
+        h1 = h1.next;
+
+        // keep picking the nodes from both halves one by one to form a reorderList
+        boolean flag = false;
+        while(h2 != null)
+        {
+            if(flag)
+            {                
+                link.next = h1;
+                h1 = h1.next;
+                link= link.next;
+                flag = false;
+            }
+            else{
+                link.next = h2;
+                h2 = h2.next;
+                link = link.next;
+                flag = true;
+            }
+        }
+
+        // append remaining nodes of 1st half
+        if(h1 != null)
+        {
+            link.next = h1;
+        }
+
+        return h3;
+    }
+    
+    // finds middle node using slow, fast nodes
+    // slow moves 1 node ahead => fast moves 2 noes ahead
+    public ListNode findMidNode(ListNode a){
+        ListNode slow = a, fast = a;
+        while(slow.next != null && fast.next != null && fast.next.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    // reverses the given linked list
+    public ListNode reverseLL(ListNode a){
+        ListNode prev = null, curr = a, temp = a;
+        // while keeping track of previous node, update current node to point to previous node
+        while(curr != null){
+            temp = temp.next;
+            curr.next = prev;
+            prev = curr;
+            curr = temp;
+        }
+        return prev;
+    }
+}
+
+/// TC = t1 + t2 + t3 = 3 * O(n) = O(n)
+// t1 = time to find mid node = O(n)
+// t2 = time to reverse 2nd half = O(n)
+// t3 = time to pick nodes for reordering List = O(n)
+/// SC = looks like no extra space is used = O(1)
