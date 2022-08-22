@@ -87,7 +87,7 @@ public class Solution {
             spfArr[i] = i;
         }
 
-        // for every prime, its multiples should have smallestPrimeFactor as that prime
+        // for every prime, its multiples' smallestPrimeFactor is that prime
         for(int i=2; i*i <= n; i++)
         {
             if(spfArr[i] == i)
@@ -101,8 +101,8 @@ public class Solution {
         return spfArr;
     }
 }
-
-    // TC: t1 + t2 = O(n (lg(lg n))) + O(nx)...n is the input given
-    // t1 = time taken by smallestPrimeFactors = O(n (lg(lg n)))
-    // t2 = time taken to countFactors for n numbers ~= n*O(x) = O(nx)  
-    // SC: space used to calculate spf array = O(n)
+	/// n is the given input size
+      /// TC: t1 + t2 = O(n (lg(lg n))) + O(nx)
+      // t1 = time taken by smallestPrimeFactors = O(n (lg(lg n)))
+      // t2 = time taken to countFactors for n numbers ~= n*O(x) = O(nx)  
+      /// SC: space used to calculate spf array = O(n)
