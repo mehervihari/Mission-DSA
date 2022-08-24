@@ -1,0 +1,75 @@
+Q. Rain Water Trapped (5* asked by many companies)
+
+Problem Description
+Given a vector A of non-negative integers representing an elevation map where the width of each bar is 1, 
+compute how much water it is able to trap after raining.
+
+Problem Constraints
+1 <= |A| <= 100000
+
+Input Format
+First and only argument is the vector A
+
+Output Format
+Return one integer, the answer to the question
+
+Example Input
+Input 1:
+A = [0, 1, 0, 2]
+Input 2:
+A = [1, 2]
+
+Example Output
+Output 1:
+1
+Output 2:
+0
+
+Example Explanation
+Explanation 1:
+1 unit is trapped on top of the 3rd element.
+Explanation 2:
+No water is trapped.
+-------------------------------------------------------------------------------------------------------------------------------------------
+Solution code: // C#
+class Solution {
+    public int trap(List<int> A) 
+    {
+        int n = A.Count;
+        int water = 0;
+
+        // Amount of water on top of the building is determined by the tallest building on the left and the tallest building on the right
+        // arrays to store max heights to left, right of "i"th element
+        int[] prefix_max = new int[n];
+        int[] postfix_max = new int[n];
+
+        int maxL = int.MinValue; prefix_max[0] = A[0];
+        int maxR = int.MinValue; postfix_max[n-1] = A[n-1];
+        int i=0;
+
+        for(i=0; i <= n-1; i++)
+        {
+            maxL = Math.Max(maxL, A[i]);
+            prefix_max[i] = maxL;
+            
+            maxR = Math.Max(maxR, A[n-i-1]);
+            postfix_max[n-i-1] = maxR;            
+        }
+
+        /* If height of building is A[i] 
+           tallest building on left has height leftMax (maxL => prefix_max[i])
+           tallest building on right has height rightMax (maxR => postfix_max[i])
+           then water on top of every 'i'th building is calculated as follows
+        */
+        for(i=0; i <= n-1; i++)
+        {
+            water += Math.Min(prefix_max[i], postfix_max[i]) - A[i];
+        }
+
+        return water;
+    }
+}
+
+/// N is the list/array size given
+/// TC = 2 array traversals = O(N)
+/// SC = extra space for prefix_max, postfix_max = O(N)
