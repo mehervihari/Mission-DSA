@@ -1,0 +1,112 @@
+Q. Points on same line
+
+Problem Description
+Given two arrays of integers A and B describing a pair of (A[i], B[i]) coordinates in a 2D plane. 
+A[i] describe x coordinates of the ith point in the 2D plane, whereas B[i] describes the y-coordinate of the ith point in the 2D plane.
+Find and return the maximum number of points that lie on the same line.
+
+Problem Constraints
+1 <= (length of the array A = length of array B) <= 1000
+-105 <= A[i], B[i] <= 105
+
+Input Format
+The first argument is an integer array A.
+The second argument is an integer array B.
+
+Output Format
+Return the maximum number of points which lie on the same line.
+
+Example Input
+Input 1:
+ A = [-1, 0, 1, 2, 3, 3]
+ B = [1, 0, 1, 2, 3, 4]
+Input 2:
+ A = [3, 1, 4, 5, 7, -9, -8, 6]
+ B = [4, -8, -3, -2, -1, 5, 7, -4]
+
+Example Output
+Output 1:
+ 4
+Output 2:
+ 2
+
+Example Explanation
+Explanation 1:
+ The maximum number of point which lie on same line are 4, those points are {0, 0}, {1, 1}, {2, 2}, {3, 3}.
+Explanation 2:
+ Any 2 points lie on a same line.
+---------------------------------------------------------------------------------------------------------------------------------------------
+Solution code:
+public class Solution {
+    public int solve(int[] a, int[] b) {
+        // idea is to traverse the points and for every point check the slope with other points
+        // because if slope of 2 points is equal to that of another 2 points then => they are on same line
+        int n = a.length;
+
+        // create a pair of points in a 2D array
+        int[][] points = new int[n][2];
+        for(int i=0; i<n; i++)
+        {
+            int[] pt = {a[i], b[i]};
+            points[i] = pt;
+        }
+        
+        // maximum number of points that lie on the same line
+        int maxPoints = 0;
+        // current max to maintain maximum count for every point // overlapPoints to deal with same points
+        int curMax, overlapPoints;
+        for(int i=0; i<n-1; i++)
+        {
+            curMax = overlapPoints = 0;
+            HashMap<String, Integer> map = new HashMap<>();
+            String slope = "";
+
+            for(int j=i+1; j < n; j++)
+            {
+                int x1 = a[i], y1 = b[i];
+                int x2 = a[j], y2 = b[j];
+
+                // find the difference, thats generally calculated to find slope of 2 points // math formula for slope = (y2-y1)/(x2-x1)
+                int ydif = y2 - y1;
+                int xdif = x2 - x1;
+                
+                // if the points are equal
+                if(x1 == x2 && y1 == y2){
+                    overlapPoints++;
+                }
+                
+                else{
+                    // slope value of 1/2 is == slope value of 2/4...
+                    // so take the slope in the most simplified form which can be done using GCD                  
+                    int g = gcd(ydif, xdif);
+                    ydif /= g;
+                    xdif /= g;
+
+                    // store the slpoe as a string to make it earier...i.e to cover different corner cases
+                    slope = Integer.toString(ydif) + " " + Integer.toString(xdif);
+
+                    // maintain the frequency of slopes
+                    if(!map.containsKey(slope))
+                    map.put(slope, 1);
+                    else map.put(slope, map.get(slope)+1);
+
+                    curMax = Math.max(curMax, map.get(slope));
+                }
+            }
+            // dont forget to include overlapPoints in the answer
+            maxPoints = Math.max(maxPoints, curMax + overlapPoints + 1);
+        }
+        return maxPoints;
+    }
+
+    //function to calculate GCD
+    public int gcd(int a, int b)
+    {
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
+
+/// N is the no. of given points
+/// TC = time taken by the nested (2)forloops = O(N2)
+/// SC = extra space for HashMap = O(N)
