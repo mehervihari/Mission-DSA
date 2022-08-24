@@ -1,0 +1,71 @@
+Q. Find Factorial!
+
+Problem Description
+Write a program to find the factorial of the given number A.
+
+Problem Constraints
+0 <= A <= 12
+
+Input Format
+First and only argument is an integer A.
+
+Output Format
+Return an integer denoting the factorial of the number A.
+
+Example Input
+Input 1:
+ A = 4
+Input 2:
+ A = 1
+
+Example Output
+Output 1:
+ 24
+Output 2:
+ 1
+
+Example Explanation
+Explanation 1:
+ Factorial of 4 = 4 * 3 * 2 * 1 = 24
+Explanation 2:
+ Factorial of 1 = 1
+--------------------------------------------------------------------------------------------------------------------------------------------
+Solution code:
+public class Solution {
+    public int solve(int a) 
+    {
+        /* accumulate the Solution as u go further - normal order - Method-1 */
+        //return fact(a, 1, 1);
+
+        /* accumulate the Solution as u go further - reverse order - Method-2 */
+        //return fact(a, 1);
+
+        /* build the Solution from returned values of sub-problems - normal order - Method-3 */
+        //return fact(1, a);
+
+        /* build the Solution from returned values of sub-problems - reverse order - Method-4 */
+        // if(a == 1) return 1;
+        // return a * solve(a-1);
+    }
+    
+    /* accumulate the Solution as u go further - normal order - Method-1 */
+    // public int fact(int n, int i, int ans)
+    // {
+    //     if(i == n+1) return ans;    
+    //     return fact(n, i+1, ans*i);
+    // }
+    
+    /* accumulate the Solution as u go further - reverse order - Method-2 */
+    // public int fact(int i, int ans)
+    // {
+    //     if(i <= 0) return ans;    
+    //     return fact(i-1, ans*i);
+    // }
+
+    /* build the Solution from returned values of sub-problems - normal order - Method-3 */
+    // public int fact(int i, int a)
+    // {
+    //     if(i == a+1) return 1;
+    //     return i * fact(i+1, a);
+    // }
+}
