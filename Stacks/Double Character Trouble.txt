@@ -1,0 +1,82 @@
+Q. Double Character Trouble
+
+Problem Description
+You are given a string A.
+An operation on the string is defined as follows:
+Remove the first occurrence of the same consecutive characters. eg for a string "abbcd", 
+the first occurrence of same consecutive characters is "bb".
+Therefore the string after this operation will be "acd".
+Keep performing this operation on the string until there are no more occurrences of the same consecutive characters and return the final string.
+
+Problem Constraints
+1 <= |A| <= 100000
+
+Input Format
+First and only argument is string A.
+
+Output Format
+Return the final string.
+
+Example Input
+Input 1:
+ A = abccbc
+Input 2:
+ A = ab
+
+Example Output
+Output 1:
+ "ac"
+Output 2:
+ "ab"
+
+Example Explanation
+Explanation 1:
+Remove the first occurrence of same consecutive characters. eg for a string "abbc", 
+the first occurrence of same consecutive characters is "bb".
+Therefore the string after this operation will be "ac".
+
+Explanation 2:
+ No removals are to be done.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Solution code:
+public class Solution {
+    public String solve(String a) 
+    {
+        int n = a.length();
+
+        // idea is to keep adding the characters to a stack and 
+        // while adding, check the consecutive charactrs and remove them
+        // characters left in the stack will be our required ones
+        Stack<Character> sta = new Stack<Character>();
+        for(int i=0; i<n; i++)
+        {
+            // if the most recently added character (to stack) is same as the current character,
+            // we found an occurance of same consecutive characters and can be removed
+            if(sta.size() != 0 && sta.peek() == a.charAt(i))
+            {
+                sta.pop(); continue;
+            }
+            sta.push(a.charAt(i));
+        }
+                
+        // collect the remaining characters from the stack and form the required string
+        // use character array since strings are immutable and costly to work with
+        int m = sta.size();
+        char[] ans = new char[m];
+        for(int i=0; i<m; i++)
+        {
+            ans[m-1-i] = sta.peek();
+            sta.pop();
+        }
+
+        // convert char array to string
+        return String.valueOf(ans);
+    }
+}
+
+/// N is string size
+/// TC = t1 * t2 = O(N) * O(1) = amortized O(N)
+// t1 = one string traversal = O(N)
+// t2 = time for checking consecutive characters = atmost there are 2 consecutive characters for each character of string
+//    = O(1) for each character
+/// SC = stack space = O(N)
