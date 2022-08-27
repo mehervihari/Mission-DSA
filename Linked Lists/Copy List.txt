@@ -1,0 +1,90 @@
+Q. Copy List
+
+Problem Description
+A linked list A is given such that each node contains an additional random pointer which could point to any node in the list or NULL.
+Return a deep copy of the list.
+
+Problem Constraints
+0 <= |A| <= 106
+
+Input Format
+The first argument of input contains a pointer to the head of linked list A.
+
+Output Format
+Return a pointer to the head of the required linked list.
+
+Example Input
+Given list
+   1 -> 2 -> 3
+with random pointers going from
+  1 -> 3
+  2 -> 1
+  3 -> 1
+  
+Example Output
+   1 -> 2 -> 3
+with random pointers going from
+  1 -> 3
+  2 -> 1
+  3 -> 1
+
+Example Explanation
+You should return a deep copy of the list. The returned answer should not contain the same node as the original list, but a copy of them. 
+The pointers in the returned list should not link to any node in the original input list.
+---------------------------------------------------------------------------------------------------------------------------------------------
+Solution code: (C#)
+/**
+ * Definition for singly-linked list with a random pointer.
+ * class RandomListNode {
+ *     int label;
+ *     RandomListNode next, random;
+ *     RandomListNode(int x) { this.label = x; }
+ * };
+ */
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public RandomListNode copyRandomList(RandomListNode head) {
+        /// try doing without extra space==============================================================================
+        // first create the copy of given list without caring random pointers
+        RandomListNode temp = head;
+        // 'h2' is the head of copy list
+        RandomListNode h2 = new RandomListNode(head.label);
+        RandomListNode temp1 = h2;
+        while(temp.next != null)
+        {
+            temp = temp.next;
+            RandomListNode temp2 = new RandomListNode(temp.label);
+            temp1.next = temp2;
+            temp1 = temp1.next;
+        }
+
+        // now create a map of original list and copy list i.e.
+        // a pair consists of 'i'th node of original list, 'i'th node of copy list
+        // 'r1' points to the head of original list // 'r2' points to the head of copy list
+        RandomListNode r1 = head, r2 = h2;
+        Dictionary<RandomListNode, RandomListNode> map = new Dictionary<RandomListNode, RandomListNode>();
+        while(r1 != null)
+        {
+            map.Add(r1, r2);
+            r1 = r1.next; r2 = r2.next;            
+        }
+
+        // now traverse the nodes of copy list and point their random pointers using the map
+        // random pointer of 'i'th node in copy list will be the node with whom 'i'th node of original list is paired
+        r1 = head; r2 = h2;
+        while(r1 != null)
+        {
+            if(r1.random != null)
+                r2.random = map[r1.random];
+            else r2.random = null;
+            r1 = r1.next; r2 = r2.next;
+        }
+        return h2;
+    }
+}
+
+/// N is the size of given list
+/// TC = 3 list traversals = O(N)
+/// SC = extra space for map = O(N)
