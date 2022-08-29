@@ -1,0 +1,134 @@
+Q. Linked-List
+
+Problem Description
+Design and implement a Linked List data structure.
+A node in a linked list should have the following attributes - an integer value and a pointer to the next node. 
+It should support the following operations:
+insert_node(position, value) - To insert the input value at the given position in the linked list.
+delete_node(position) - Delete the value at the given position from the linked list.
+print_ll() - Print the entire linked list, such that each element is followed by a single space.
+Note:
+If an input position does not satisfy the constraint, no action is required.
+Each print query has to be executed in a new line.
+
+Problem Constraints
+1 <= value <= 105
+1 <= position <= n where, n is the size of the linked-list.
+
+Input Format
+First line contains an integer denoting number of cases, let's say t.
+Next t line denotes the cases.
+
+Output Format
+When there is a case of print_ll(),  Print the entire linked list, such that each element is followed by a single space.
+NOTE: You don't need to return anything.
+
+Example Input
+5
+i 1 23
+i 2 24
+p
+d 1
+p
+
+Example Output
+23 24
+24
+
+Example Explanation
+After first two cases linked list contains two elements 23 and 24.
+At third case print: 23 24.
+At fourth case delete value at first position, only one element left 24.
+At fifth case print: 24.
+---------------------------------------------------------------------------------------------------------------------------------------
+Solution code: (JAVA)
+    // create a custom node class that looks like below one
+    static class Node{
+        public int data;
+        public Node next;
+        Node(int x){
+            data = x; next = null;
+        }
+    }
+
+    // maintain a node which always points to the head of the linkedlist
+    public static Node head;
+
+    // maintain the size of the linkedlist
+    public static int size = 0;
+    
+    public static void insert_node(int position, int value) {
+        // @params position, integer
+        // @params value, integer
+        Node newNode = new Node(value);
+        Node temp = head;
+
+        // if a node is to be inserted at 1st position, create a new node -> point its next to the head and make it the head
+        if(position == 1) {
+            newNode.next = temp;
+            head = newNode;
+            size++;
+        }
+
+        // if a node is to be inserted at other positions, find the previous node to the position at which new node is to be inserted and
+        // point the newnode to that previous node's next and previous node points to this new node
+        if(position > 1 && position <= size+1)
+        {
+            int k = 1;
+            while(k < position - 1)
+            {
+                temp = temp.next;
+                k++;
+            }
+            newNode.next = temp.next;
+            temp.next = newNode;
+            size++;
+        }
+        else return;            
+    }
+
+    public static void delete_node(int position) {
+        // @params position, integer
+        Node temp = head;
+
+        // if a node is to be deleted at 1st position, just make the next node of current's head as the head
+        if(position == 1){
+            head = temp.next;
+            size--;
+        }
+
+        // if a node is to be deleted at other positions, find the previous node to the position at which node is to be deleted and
+        // make this previous node point to its next's next node (that way a node is skipped and is no more part of the linkedlist)
+        if(position > 1 && position <= size)
+        {
+            int k = 1;
+            while(k < position - 1)
+            {
+                temp = temp.next; 
+                k++;
+            }
+            if(temp.next.next != null) temp.next = temp.next.next;
+            else temp.next = null;
+            size--;
+        }
+        else return;
+    }
+
+    public static void print_ll() {
+        // Output each element followed by a space
+        Node temp = head;
+        int i = 1;
+        // traverse all the nodes and print their values
+        while(i <= size && temp.next != null)
+        {
+            System.out.print(temp.data + " ");
+            temp = temp.next;
+            i++;
+        }
+        System.out.print(temp.data);
+    }
+
+/// let N is the size of the LL at a given time
+/// TC = O(N) for any operation at that time
+/// SC = O(N) at any operation at that time
+
