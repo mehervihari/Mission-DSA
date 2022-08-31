@@ -1,0 +1,69 @@
+Q. List Cycle
+
+Problem Description
+Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+Try solving it using constant additional space.
+
+Example:
+Input: 
+
+                  ______
+                 |     |
+                 \/    |
+        1 -> 2 -> 3 -> 4
+
+Return the node corresponding to node 3.
+--------------------------------------------------------------------------------------------------------------------------------
+Solution code: (JAVA)
+using System;
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int x) {this.val = x; this.next = null;}
+ * }
+ */
+class Solution {
+	public ListNode detectCycle(ListNode a) {
+        // idea is to 1st find whether there is a loop in given list and then locate it
+
+        // lets take 2 node pointers: slow, fast
+        // slow moves 1 node at a time, fast moves 2 nodes at a time
+        // if there is a cycle in given list, they both must meet at some point
+
+        ListNode slow = a, fast = a;
+        bool isLooped = false;
+        while(slow.next != null && fast.next != null && fast.next.next != null)
+        {
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast){
+                isLooped = true; break;
+            }
+        }
+
+        /* find where the loop begins...*/
+        // start a pointer 'temp' from start of the list
+        // 'slow' is at the node where 'slow', 'fast' meets
+        // now move 'temp', 'slow' pointers 1 node at a time...where they both meet is the start of the cycle
+        ListNode temp = a;
+        if(isLooped && slow.next != null && fast.next != null)
+        {            
+            while(temp.next != null){
+                
+                if(slow == temp){
+                    break;
+                }
+                temp = temp.next;
+                slow = slow.next;
+            }
+        }
+        else return null;
+        return temp;
+    }
+}
+
+/// N is length of the list
+/// TC = ~2 list traversals = looks like O(N)
+/// SC = constant extra space = O(1) 
