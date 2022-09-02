@@ -1,0 +1,75 @@
+Q. Postorder Traversal
+
+Problem Description
+Given a binary tree, return the Postorder traversal of its nodes values.
+
+Problem Constraints
+1 <= number of nodes <= 105
+
+Input Format
+First and only argument is root node of the binary tree, A.
+
+Output Format
+Return an integer array denoting the Postorder traversal of the given binary tree.
+
+Example Input
+Input 1:
+
+   1
+    \
+     2
+    /
+   3
+Input 2:
+
+   1
+  / \
+ 6   2
+    /
+   3
+
+Example Output
+Output 1:
+ [3, 2, 1]
+Output 2:
+ [6, 3, 2, 1]
+
+Example Explanation
+Explanation 1:
+ The Preoder Traversal of the given tree is [3, 2, 1].
+Explanation 2:
+ The Preoder Traversal of the given tree is [6, 3, 2, 1].
+-----------------------------------------------------------------------------------------------------------------------
+Solution code: (C#)
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int x) {this.val = x; this.left = this.right = null;}
+ * }
+ */
+class Solution {
+    // idea is to recursively call the left, right nodes of a node until they exhaust and
+    // keep those node values adding to a list in postorder which means "Left-Right-Root"
+    List<int> ans = new List<int>();
+
+    public List<int> postorderTraversal(TreeNode a) {
+        postorder(a);
+        return ans;
+    }
+
+    public void postorder(TreeNode a)
+    {
+        // First add the left node then the right node and then the current node values to the list
+        if(a == null) return;
+        postorder(a.left);
+        postorder(a.right);
+        ans.Add(a.val);
+    }
+}
+
+/// N is size of the tree
+/// TC = one tree traversal = O(N)
+/// SC = stack space = O(N)
