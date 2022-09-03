@@ -1,0 +1,82 @@
+Q. Evaluate Expression
+
+Problem Description
+An arithmetic expression is given by a character array A of size N. 
+Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+Valid operators are +, -, *, /. Each character may be an integer or an operator.
+
+Problem Constraints
+1 <= N <= 105
+
+Input Format
+The only argument given is character array A.
+
+Output Format
+Return the value of arithmetic expression formed using reverse Polish Notation.
+
+Example Input
+Input 1:
+    A =   ["2", "1", "+", "3", "*"]
+Input 2:
+    A = ["4", "13", "5", "/", "+"]
+
+Example Output
+Output 1:
+    9
+Output 2:
+    6
+
+Example Explanation
+Explaination 1:
+    starting from backside:
+    * : () * ()
+    3 : () * (3)
+    + : (() + ()) * (3)
+    1 : (() + (1)) * (3)
+    2 : ((2) + (1)) * (3)
+    ((2) + (1)) * (3) = 9
+Explaination 2:
+    + : () + ()
+    / : () + (() / ())
+    5 : () + (() / (5))
+    13 : () + ((13) / (5))
+    4 : (4) + ((13) / (5))
+    (4) + ((13) / (5)) = 6
+------------------------------------------------------------------------------------------------------------------------
+Solution code: (JAVA
+public class Solution {
+    public int evalRPN(String[] a) {
+        // Push the operands into the stack in the order they appear
+        // When any operator encounters then pop two topmost operands for executing the operation
+        // After execution push the result obtained into the stack
+        int n = a.length;
+        char[] ans = new char[n];
+        Stack<Integer> stac = new Stack<>();
+
+        for(int i=0; i<n; i++)
+        {
+            if(a[i].equals("+") || a[i].equals("-") || a[i].equals("*") || a[i].equals("/"))
+            {
+                int y = stac.peek(); stac.pop(); 
+                int x = stac.peek(); stac.pop();
+                
+                int currans = 0;
+                if(a[i].equals("+")) currans = (x + y);
+                else if(a[i].equals("-")) currans = (x - y);
+                else if(a[i].equals("*")) currans = (x * y);
+                else currans = (x / y);
+                
+                stac.push(currans);
+            }
+            else {
+                stac.push(Integer.parseInt(a[i]));
+            }
+        }
+        // After the complete execution of expression, the final element remains in the top of the stack is the answer
+        return stac.pop();
+    }
+}
+
+/// N is input string array size
+/// TC = 1 array traversal = O(N)
+/// SC = extra stack space = O(N)

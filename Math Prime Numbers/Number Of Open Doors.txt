@@ -37,7 +37,7 @@ Output 2:
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Solution Code:
+Solution Code-1: (JAVA)
 public class Solution {
     public int solve(int A) {
         // corner cases
@@ -106,3 +106,17 @@ public class Solution {
       // t1 = time taken by smallestPrimeFactors = O(n (lg(lg n)))
       // t2 = time taken to countFactors for n numbers ~= n*O(x) = O(nx)  
       /// SC: space used to calculate spf array = O(n)
+
+
+
+Solution Code-2: (JAVA)
+public int solve(int A) {
+        // 'd'th door is altered by every factor of 'd'
+        // so door 'd' remains open only if it has odd no. of factors -
+        // all numbers except perfectsquare have even no. of factors -
+        // so, only the doors that are perfectsquares will remain open and
+        // the no. of perfectsquares <= A are equal to floor(squareroot of A)
+        return (int)Math.floor(Math.sqrt(A));
+    }
+
+    /// TC = O(1) /// SC = O(1)

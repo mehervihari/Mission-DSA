@@ -1,0 +1,107 @@
+Q. Merge Two Sorted Lists
+
+Problem Description
+Merge two sorted linked lists, A and B, and return it as a new list.
+The new list should be made by splicing together the nodes of the first two lists and should also be sorted.
+
+Problem Constraints
+0 <= |A|, |B| <= 105
+
+Input Format
+The first argument of input contains a pointer to the head of linked list A.
+The second argument of input contains a pointer to the head of linked list B.
+
+Output Format
+Return a pointer to the head of the merged linked list.
+
+Example Input
+Input 1:
+ A = 5 -> 8 -> 20
+ B = 4 -> 11 -> 15
+Input 2:
+ A = 1 -> 2 -> 3
+ B = Null
+
+Example Output
+Output 1:
+ 4 -> 5 -> 8 -> 11 -> 15 -> 20
+Output 2:
+ 1 -> 2 -> 3
+
+Example Explanation
+Explanation 1:
+ Merging A and B will result in 4 -> 5 -> 8 -> 11 -> 15 -> 20 
+Explanation 2:
+ We don't need to merge as B is empty.
+-------------------------------------------------------------------------------------------------------------------------------------------
+Solution code: (JAVA)
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode mergeTwoLists(ListNode a, ListNode b) 
+    {
+        // using the merge algorithm
+        ListNode h1 = a, h2 = b;
+
+        // CORNER CASES
+        if(h1 == null && h2 == null) return null;
+        else if(h1 == null && h2 != null) return h2;
+        else if(h1 != null && h2 == null) return h1;
+
+        // new node 'h3' is our answer list
+        // 'h1'points to 1st list (a), 'h2' points to 2nd list (b)
+        // initialize 'h3' and its value is the value of 1st smaller element of 'h1' & 'h2'
+        ListNode h3 = new ListNode(0);
+        if(h1.val <= h2.val){
+            h3.val = h1.val;
+            h1 = h1.next;
+        }
+        else if(h2 != null){
+            h3.val = h2.val; h2 = h2.next;
+        }
+
+        // 'ans' points to the 1st node of 'h3' and is returned as the answer
+        // we cant return 'h3' as our answer because it gets updated every time while comparisons
+        ListNode ans = h3;
+
+        // keep comparing the values of 'h1' & 'h2' and point the 'h3' node to the smaller of them
+        while(h1 != null && h2 != null)
+        {
+            // if value of 'h1' is <= that of 'h2', 'h3' should point to 'h1'
+            // also update 'h1' to its next node
+            if(h1.val <= h2.val)
+            {
+                h3.next = h1;
+                h1 = h1.next;
+            }
+            // else 'h3' should point to 'h2'
+            // also update 'h1' to its next node
+            else{
+                h3.next = h2;
+                h2 = h2.next;
+            }
+
+            // update 'h3' to its next node
+            h3 = h3.next;
+        }
+
+        // take care of remaining elements of 1st and 2nd lists that might be leftover after all comparisons are done
+        // all comparisons are done when any or both of the lists get exhausted
+        // when only any one of the lists get exhausted, still there are nodes in the other list
+        if(h1 != null) h3.next = h1;
+        if(h2 != null) h3.next = h2;
+
+        return ans;
+    }
+}
+
+/// N is size of 1st list, M is size of 2nd list
+/// TC = one traversal of the list having minimum elements = O(Min(N, M))
+/// SC = constant extra space = O(1)
+

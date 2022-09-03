@@ -1,0 +1,88 @@
+Q. Longest Common Prefix
+
+Problem Description
+Given the array of strings A, you need to find the longest string S, which is the prefix of ALL the strings in the array.
+The longest common prefix for a pair of strings S1 and S2 is the longest string S which is the prefix of both S1 and S2.
+Example: the longest common prefix of "abcdefgh" and "abcefgh" is "abc".
+
+Problem Constraints
+0 <= sum of length of all strings <= 1000000
+
+Input Format
+The only argument given is an array of strings A.
+
+Output Format
+Return the longest common prefix of all strings in A.
+
+Example Input
+Input 1:
+A = ["abcdefgh", "aefghijk", "abcefgh"]
+Input 2:
+A = ["abab", "ab", "abcd"];
+
+Example Output
+Output 1:
+"a"
+Output 2:
+"ab"
+
+Example Explanation
+Explanation 1:
+Longest common prefix of all the strings is "a".
+Explanation 2:
+Longest common prefix of all the strings is "ab".
+------------------------------------------------------------------------------------------------------------------------
+Solution code: (JAVA)
+public class Solution {
+    public String longestCommonPrefix(String[] a) 
+    {
+        // idea is to compare the 1st string with all the other strings and
+        // since the prefix has to be the prefix of ALL the strings. 
+        // find the substring whose characters are the prefix of every string and is the longest
+        
+        int n = a.length;
+        // CORNER CASES
+        if(n < 1) return "";
+        else if(n == 1) return a[0];
+
+        // first compare the 1st, 2nd strings
+        String s1 = a[0], s2 = a[1];
+
+        // check for the common prefix characters in both these strings
+        // it is enough to traverse the string of minimum length (because we want only common characters)
+        int looplen = Math.min(s1.length(), s2.length());
+        int currentCommon = 0;
+        for(int i = 0; i < looplen; i++)
+        {    
+            if(s1.charAt(i) == s2.charAt(i))
+                currentCommon++;
+            else break;
+        }
+
+        // make a new string which consists of the common chars of these 2 strings,
+        String ans = s1.substring(0, currentCommon);
+
+        // from now on, it is enough to compare the other strings with this new string (because we want only common characters)
+        for(int i = 2; i < n; i++)
+        {
+            currentCommon = 0;
+            s1 = ans; s2 = a[i]; looplen = Math.min(s1.length(), s2.length());
+            for(int j=0; j < looplen; j++)
+            {
+                if(s1.charAt(j) == s2.charAt(j))
+                    currentCommon++;
+                else break;
+            }
+            // update the new string 'ans' so that it will only contain the longest common prefix characters (found so far)
+            ans = s1.substring(0, currentCommon);
+        }
+        return ans;
+    }
+}
+
+/// N is the length of longest string in given array
+/// TC = worst case (when all the strings are equal) = O(N2);
+/// TC = average case (when all the strings are not equal) 
+//     = O(N * (#commoncharacters in 1st comparision))
+//     = O(N * Min(s1.length(), s2.length()))
+/// SC = extra space for 'ans' string = O(N)
