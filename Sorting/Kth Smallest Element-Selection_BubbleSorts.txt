@@ -1,0 +1,108 @@
+Q. Kth Smallest Element
+
+Problem Description
+Find the Bth smallest element in given array A .
+NOTE: Users should try to solve it in less than equal to B swaps.
+
+Problem Constraints
+1 <= |A| <= 100000
+1 <= B <= min(|A|, 500)
+1 <= A[i] <= 109
+
+Input Format
+The first argument is an integer array A.
+The second argument is integer B.
+
+Output Format
+Return the Bth smallest element in given array.
+
+Example Input
+Input 1:
+A = [2, 1, 4, 3, 2]
+B = 3
+Input 2:
+A = [1, 2]
+B = 2
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 2
+
+Example Explanation
+Explanation 1:
+ 3rd element after sorting is 2.
+Explanation 2:
+ 2nd element after sorting is 2.
+
+----------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+public class Solution {
+    // DO NOT MODIFY THE ARGUMENTS WITH "final" PREFIX. IT IS READ ONLY
+    public int kthsmallest(final int[] A, int B) {
+        int n = A.length;
+        // for an optimal TC, we may choose selection_sort/ bubble_sort based on value of 'B'
+        if(B <= n/2)
+            selection_sort(A, B);
+        else bubble_sort(A, B);
+        return A[B-1];
+    }
+
+    public void selection_sort(int[] a, int k)
+    {
+        int n = a.length;
+        // Since we are asked to solve in <= 'B' swaps, instead of sorting the whole array
+        // its enough to sort that many elements in the array
+        for(int i=0; i < k; i++)
+        {
+            int imin = i;
+            // find the min element in the array part that is rightside to i
+            // and swap that min element with element at i
+            for(int j=i+1; j<n; j++)
+            {
+                if(a[j] < a[imin])
+                {
+                    imin = j;
+                }
+            }
+            int temp = a[i];
+            a[i] = a[imin];
+            a[imin] = temp;
+        }
+    }
+
+    public void bubble_sort(int[] a, int k)
+    {
+        int n = a.length;
+        // Since we are asked to solve in <= 'B' swaps, instead of sorting the whole array
+        // its enough to sort that many elements in the array
+        for(int i = 0; i < k; i++)
+        {
+            // larger bubbles raise faster. bubble up the next largest element to the top
+            // similarly in every iteration largest element settles at its position in right part of the array
+            // in 'i'th iteration, an element settles in 'n-i-1'th position...i.e. that element is in its correct place of sorting
+            boolean swapped = false;
+            for(int j = 0; j <= n-i-2; j++)
+            {
+                if(a[j] > a[j+1])
+                {
+                    int temp = a[j];
+                    a[j] = a[j+1];
+                    a[j+1] = temp;
+                    swapped = true;
+                }
+            }
+            // if we have not swapped in an iteration, it means the array has been sorted
+            if(!swapped)
+                break;
+        }
+    }
+}
+
+/// N is input array size
+/// TC = O(B) * O(N) = O(BN)
+// outer loop to (select) an element in the array = O(B)
+// other loop to compare that element with every other element of the array = O(N)
+/// SC = constant extra space = O(1)
