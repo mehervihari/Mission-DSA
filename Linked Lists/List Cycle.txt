@@ -48,7 +48,7 @@ class Solution {
         // 'slow' is at the node where 'slow', 'fast' meets
         // now move 'temp', 'slow' pointers 1 node at a time...where they both meet is the start of the cycle
         ListNode temp = a;
-        if(isLooped && slow.next != null && fast.next != null)
+        if(isLooped)
         {            
             while(temp.next != null){
                 
