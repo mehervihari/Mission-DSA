@@ -1,0 +1,105 @@
+Q. Remove Loop from Linked List
+
+Problem Description
+You are given a linked list that contains a loop.
+You need to find the node, which creates a loop and break it by making the node point to NULL.
+
+Problem Constraints
+1 <= number of nodes <= 1000
+
+Input Format
+Only argument is the head of the linked list.
+
+Output Format
+return the head of the updated linked list.
+
+Example Input
+Input 1:
+
+1 -> 2
+^    |
+| - - 
+Input 2:
+
+3 -> 2 -> 4 -> 5 -> 6
+          ^         |
+          |         |    
+          - - - - - -
+
+Example Output
+Output 1:
+ 1 -> 2 -> NULL
+Output 2:
+ 3 -> 2 -> 4 -> 5 -> 6 -> NULL
+
+Example Explanation
+Explanation 1:
+ Chain of 1->2 is broken.
+Explanation 2:
+ Chain of 4->6 is broken.
+
+--------------------------------------------------------------------------------------------------------------
+
+Solution Code: (C#)
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int x) {this.val = x; this.next = null;}
+ * }
+ */
+class Solution {
+    public ListNode solve(ListNode a) {
+        // idea is to 1st find whether there is a cycle/loop in given list and then locate it, break it
+
+        // lets take 2 node pointers: 'slow', 'fast'
+        // 'slow' moves 1 node at a time, 'fast' moves 2 nodes at a time
+        // if there is a cycle in given list, they both must meet at some point
+        ListNode slow = a, fast = a;
+        bool isLooped = false;
+        while(slow.next != null && fast.next != null && fast.next.next != null)
+        {
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast){
+                isLooped = true; break;
+            }
+        }
+
+        /* locate the cycle */
+        // now slow is present where 'slow' & 'fast' meets
+        // start a node 'temp' from start of the linkedlist
+        // move 'slow', 'temp' 1 node at a time until they both meet
+        // where 'slow', 'temp' meets is the beginning of the cycle
+        ListNode temp = a;
+        if(isLooped)
+        {            
+            while(slow != temp)
+            {
+                temp = temp.next;
+                slow = slow.next;
+            }
+        }
+        else return a;
+
+        /* break the cycle */
+        // now 'slow' is present at the node where the cycle begins
+        // initialize a node 'h' from the cycle beginning i.e. 'slow' and
+        // move it 1 node at a time until it's next becomes 'slow'
+        ListNode cyclestart = slow;
+        ListNode h = cyclestart;
+        while(h.next != cyclestart)
+        {
+            h = h.next;
+        }
+
+        // make 'h's next as null to break the cycle
+        h.next = null;
+        return a;
+    }
+}
+
+/// N is size of list
+/// TC = atmost 3 traversals required = O(3N) = O(N)
+/// SC = constant extra space = O(1)
