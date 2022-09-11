@@ -1,0 +1,116 @@
+Q. Infix to Postfix
+
+Problem Description
+Given string A denoting an infix expression. Convert the infix expression into a postfix expression.
+String A consists of ^, /, *, +, -, (, ) and lowercase English alphabets where lowercase English alphabets are operands 
+and ^, /, *, +, - are operators.
+Find and return the postfix expression of A.
+NOTE:
+^ has the highest precedence.
+/ and * have equal precedence but greater than + and -.
++ and - have equal precedence and lowest precedence among given operators.
+
+Problem Constraints
+1 <= length of the string <= 500000
+
+Input Format
+The only argument given is string A.
+
+Output Format
+Return a string denoting the postfix conversion of A.
+
+Example Input
+Input 1:
+ A = "x^y/(a*z)+b"
+Input 2:
+ A = "a+b*(c^d-e)^(f+g*h)-i"
+
+Example Output
+Output 1:
+ "xy^az*/b+"
+Output 2:
+ "abcd^e-fgh*+^*+i-"
+
+Example Explanation
+Explanation 1:
+ Ouput dentotes the postfix expression of the given input.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+public class Solution {
+    public String solve(String a) {
+        // idea is to traverse the String and convert it to postorder based on different conditions (defined below)
+        int n = a.length();
+        
+        // list to store the postfix of given String
+        List<Character> ans = new ArrayList<>();
+
+        // stack helps in evaluating the order of postfix by storing operations
+        Stack<Character> stac = new Stack<>();
+
+        // HashMap to store the precedence or priority of different operators that are present in given String
+        HashMap<Character, Integer> prec = new HashMap<>();
+        prec.put('(', 0); prec.put(')', 0); prec.put('^', 4); prec.put('/', 3); prec.put('*', 3); prec.put('+', 1); prec.put('-', 1);
+
+        for(int i=0; i<n; i++)
+        {
+            // it is clear that all the operands (alphabet letters) are part of the postfix, 
+            // so they should be directly added to the answer list 
+            if((a.charAt(i) >= 97 && a.charAt(i) <= 122))
+            {
+                ans.add(a.charAt(i));
+            }
+
+            // when you encounter a open bracket, push it to the stack
+            else if(a.charAt(i) == '(')
+            {
+                stac.push(a.charAt(i));
+            }
+
+            // when you encounter a closed bracket, take out all the Characters from the stack until an open bracket is seen
+            // and add them to the answer list
+            // that way we are evaluating the postfix order of the expressions present within brackets
+            else if(a.charAt(i) == ')')
+            {
+                while(stac.peek() != '(')
+                {
+                    ans.add(stac.peek()); 
+                    stac.pop();
+                }
+                // remove the open bracket
+                stac.pop();
+            }
+
+            // order of the operands should be taken care of based on their priority
+            // so whenever an operand is encountered, make sure it is added to the stack asper the priority
+            else{
+                // if the current character has less priority than the one on top of the stack,
+                // take out all the Characters from the stack and add them to the answer list
+                // do this until the current character becomes the greater priority
+                while(stac.size() != 0 && prec.get(a.charAt(i)) <= prec.get(stac.peek()))
+                {
+                    ans.add(stac.pop());
+                }
+                stac.push(a.charAt(i));
+            }
+        }
+
+        // add the remaining Characters that might be leftover in the stack to our answer list
+        while(stac.size() != 0) ans.add(stac.pop());
+
+        // convert the answer list to a character array
+        char[] ch = new char[ans.size()];
+        for(int i=0; i<ans.size(); i++)
+        {
+            ch[i] = ans.get(i);
+        }
+
+        // convert the character array to a String
+        return String.valueOf(ch);
+    }
+}
+
+/// N is size of the input String
+/// TC = 1 String traversal = O(N)
+/// SC = extra space for list, stack, array = O(N)
