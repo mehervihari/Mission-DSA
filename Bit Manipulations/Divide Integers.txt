@@ -1,0 +1,82 @@
+Q. Divide Integers
+
+Problem Description
+Divide two integers without using multiplication, division and mod operator.
+Return the floor of the result of the division.
+Also, consider if there can be overflow cases i.e output is greater than INT_MAX, return INT_MAX.
+NOTE: INT_MAX = 2^31 - 1
+
+Problem Constraints
+-231 <= A, B <= 231-1
+B != 0
+
+Input Format
+The first argument is an integer A denoting the dividend.
+The second argument is an integer B denoting the divisor.
+
+Output Format
+Return an integer denoting the floor value of the division.
+
+Example Input
+Input 1:
+ A = 5
+ B = 2
+Input 2:
+ A = 7
+ B = 1
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 7
+
+Example Explanation
+Explanation 1:
+ floor(5/2) = 2
+
+-------------------------------------------------------------------------------------------------------------------
+
+public class Solution {
+    public int divide(int A, int B) {
+        if(A == 0 || B == 0) return 0;
+        if(B == 1) return A;
+        //storing a, b in long to avoid overflow when any of them is -2e31
+        //because when their abs are taken it becomes 2e31 and it overflows
+        long n = A, m = B;
+        //to decide whether answer is negative or positive
+        int sign = 1;
+        if(n < 0) sign = -sign;
+        if(m < 0) sign = -sign;
+
+        //taking absolute value to operate on them
+        n = Math.abs(n);
+        m = Math.abs(m);
+
+        // q is quotient
+        long q = 0;
+        //for every bit check if m * 2ei is <= n and do following operations to attain n/m
+        for(int i=32; i>=1; i--)
+        {
+            if((m << (i-1)) <= n)
+            {
+                n -= (m << (i-1));
+                q += (1L << (i-1));
+            }
+        }
+
+        //checking the sign
+        if(sign < 0)
+            q = -q;
+        //check overflow
+        if(q >= Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        int ans = (int)(q);
+        
+        ans = (int)Math.floor(ans);
+        return ans;
+    }
+}
+
+// TC: O(32) => O(1)
+// SC: O(1) since no extra space
