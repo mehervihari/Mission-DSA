@@ -1,0 +1,137 @@
+Q. Max Non Negative SubArray
+
+Given an array of integers, A of length N, find out the maximum sum sub-array of non negative numbers from A.
+The sub-array should be contiguous i.e., a sub-array created by choosing the second and fourth element and skipping the third element is invalid.
+Maximum sub-array is defined in terms of the sum of the elements in the sub-array.
+Find and return the required subarray.
+NOTE:
+    1. If there is a tie, then compare with segment's length and return segment which has maximum length.
+    2. If there is still a tie, then return the segment with minimum starting index.
+
+Input Format:
+The first and the only argument of input contains an integer array A, of length N.
+
+Output Format:
+Return an array of integers, that is a subarray of A that satisfies the given conditions.
+
+Constraints:
+1 <= N <= 1e5
+-INT_MAX < A[i] <= INT_MAX
+
+Examples:
+Input 1:
+    A = [1, 2, 5, -7, 2, 3]
+Output 1:
+    [1, 2, 5]
+Explanation 1:
+    The two sub-arrays are [1, 2, 5] [2, 3].
+    The answer is [1, 2, 5] as its sum is larger than [2, 3].
+
+Input 2:
+    A = [10, -1, 2, 3, -4, 100]
+Output 2:
+    [100]
+Explanation 2:
+    The three sub-arrays are [10], [2, 3], [100].
+    The answer is [100] as its sum is larger than the other two.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Solution Code-1: (JAVA)
+public class Solution {
+    public int[] maxset(int[] a) {
+        // idea is to traverse the array and whilse doing so,
+        // calculate the contiguos positive sum and
+        // when you encounter a negative number, check and update the maxsum, subarray length with those of current ones 
+        // and reset them to 0 to freshly calculate another positive subarray sum
+
+        int n = a.length, maxlen = 0, length = 0;
+        long maxsum = 0, sum = 0;
+        int start = 0;
+        for(int i=0; i<n; i++)
+        {
+            // calculate the contiguos sum as long as the numbers are +ve
+            if(a[i] >= 0){
+                sum += a[i];
+                length++;
+            }
+
+            // if the number is -ve or the array end is reached, update the maxsum, maxlength accordingly
+            if(a[i] < 0 || (i == n-1 && a[i] >= 0))
+            {
+                if(sum > maxsum || sum == maxsum && length > maxlen)
+                {
+                    if(i == n-1 && a[i] >= 0) start = i - length + 1;
+                    else 
+                        start = i - length;
+                    maxlen = length;
+                    maxsum = sum;
+                }
+                // reset to 0 to freshly calculate next +ve subarray sum
+                sum = 0; length = 0;
+            }
+        }
+
+        // construct the required answer
+        int[] ans = new int[maxlen];
+        for(int j= 0; j < maxlen; j++)
+        {
+            ans[j] = a[start + j];
+        }
+        return ans;
+    }
+}
+
+Solution Code-2: (JAVA) // more understandable way
+public int[] maxset(int[] a) {
+        /*
+        Loop i = 1 to Array.length :
+        IF current element is positive :
+                update current sum
+                compare max sum with current sum
+                update max sum
+                update max ranges
+        ELSE :
+            current sum := 0
+            update current ranges.
+        EndLoop;
+
+        return elements of max ranges
+        */
+        int n = a.length, maxlen = 0, length = 0;
+        long maxsum = 0, sum = 0;
+        int start = 0;
+        int i = 0;
+        while(i < n)
+        {
+            if(a[i] >= 0)
+            {
+                sum += a[i];
+                length++;
+                if(sum > maxsum || (sum == maxsum && length > maxlen))
+                {
+                    maxsum = sum;
+                    maxlen = length;
+                    start = i - length  + 1;
+                }
+            }
+            else{
+                sum = 0; length = 0;
+            }
+            i++;
+        }
+
+        // construct the required answer
+        int[] ans = new int[maxlen];
+        for(int j= 0; j < maxlen; j++)
+        {
+            ans[j] = a[start + j];
+        }
+        return ans;
+    }
+}
+
+/// N is the input array size
+/// TC = 1 array traversal = O(N)
+/// SC = extra space for answer = O(N) // if you dont consider answer array SC = O(1)
+

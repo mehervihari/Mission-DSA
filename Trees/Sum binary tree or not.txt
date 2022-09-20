@@ -1,0 +1,145 @@
+Q. Sum binary tree or not
+
+Problem Description
+Given a binary tree. Check whether the given tree is a Sum-binary Tree or not.
+Sum-binary Tree is a Binary Tree where the value of a every node is equal to sum of the nodes present in its left subtree and right subtree.
+An empty tree is Sum-binary Tree and sum of an empty tree can be considered as 0. A leaf node is also considered as SumTree.
+Return 1 if it sum-binary tree else return 0.
+
+Problem Constraints
+1 <= length of the array <= 100000
+0 <= node values <= 50
+
+Input Format
+The only argument given is the root node of tree A.
+
+Output Format
+Return 1 if it is sum-binary tree else return 0.
+
+Example Input
+Input 1:
+
+       26
+     /    \
+    10     3
+   /  \     \
+  4   6      3
+Input 2:
+
+       26
+     /    \
+    10     3
+   /  \     \
+  4   6      4
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+Example Explanation
+Explanation 1:
+ All leaf nodes are considered as SumTree. 
+ Value of Node 10 = 4 + 6.
+ Value of Node 3 = 0 + 3 
+ Value of Node 26 = 20 + 6 
+Explanation 2:
+ Sum of left subtree and right subtree is 27 which is not equal to the value of root node which is 26.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Solution Code-1: (JAVA)
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *      val = x;
+ *      left=null;
+ *      right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int solve(TreeNode root) 
+    {
+        // idea is to calculate the sum of root's LST and RST and then check if their addition is equal to root's value
+        if(root == null) return 1;
+        
+        if(root.left == null && root.right == null) return 1;
+        
+        int lsum = nodeSum(root.left);
+        int rsum = nodeSum(root.right);
+
+        // since every node has to satisfy this property, we check for every node recursively
+        if(root.val == lsum + rsum)
+        {
+            return (solve(root.left) & solve(root.right));
+        }
+        return 0;
+    }
+
+    // function to calculate the sum of all nodes in a given tree
+    int nodeSum(TreeNode node)
+	{
+	    if(node == null) return 0;
+	    
+	    int sum = node.val;
+	    sum += nodeSum(node.left);
+	    sum += nodeSum(node.right);
+	    
+	    return sum;
+	}
+}
+
+/// N is #nodes in given tree
+/// TC = t1 * t2 = O(N^2)
+// t1 = visiting every node = O(N)
+// t2 = time to calculate sum of the tree = O(N)
+/// SC = stack space = O(N)
+---------------------------------------------------------------------
+Solution Code-2: (JAVA)
+public class Solution {
+    // idea is to calculate the sum in each step same like postorder traversal
+    // if curr node satisfies the sumtree property, return lst + rst + currnode's value
+    // else return -1
+    public int solve(TreeNode root) 
+    {
+        int total = isSumTree(root);
+        if(total == 2 * root.val)
+            return 1;
+        else return 0;
+    }
+
+    public int isSumTree(TreeNode n)
+    {
+        if(n == null) return 0;
+
+        // sum of left sub-tree
+        int lst = isSumTree(n.left);
+        if(lst == -1) return -1;
+
+        // sum of right sub-tree
+        int rst = isSumTree(n.right);
+        if(rst == -1) return -1;
+
+        if(isLeaf(n) == 1 || lst + rst == n.val)
+            return lst + rst + n.val;
+        else return -1;
+    }
+
+    // function to check if given node is a leaf
+    public int isLeaf(TreeNode n)
+    {
+        if(n == null) return 0;
+        if(n.left == null && n.right == null) return 1;
+        return 0;
+    }
+}
+
+/// N is #nodes in given tree
+/// TC = visiting every node atmost once = O(N)
+/// SC = stack space = O(N)

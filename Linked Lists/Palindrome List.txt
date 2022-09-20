@@ -1,0 +1,115 @@
+Q. Palindrome List
+
+Problem Description
+Given a singly linked list A, determine if it's a palindrome. Return 1 or 0, denoting if it's a palindrome or not, respectively.
+
+Problem Constraints
+1 <= |A| <= 105
+
+Input Format
+The first and the only argument of input contains a pointer to the head of the given linked list.
+
+Output Format
+Return 0, if the linked list is not a palindrome.
+Return 1, if the linked list is a palindrome.
+
+Example Input
+Input 1:
+A = [1, 2, 2, 1]
+Input 2:
+A = [1, 3, 2]
+
+Example Output
+Output 1:
+ 1 
+Output 2:
+ 0 
+
+Example Explanation
+Explanation 1:
+ The first linked list is a palindrome as [1, 2, 2, 1] is equal to its reversed form.
+Explanation 2:
+ The second linked list is not a palindrom as [1, 3, 2] is not equal to [2, 3, 1].
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public int lPalin(ListNode a) 
+    {
+        // idea is to find the middle node, divide the list into 2 halves, reverse the first half
+        // now compare the elements in both the halves to findout if given list is palindrome
+        
+        // find the size of the given list and guess the middle node position
+        int n = sizeofLL(a);
+        int mid = n/2, count = 0;
+        if(n % 2 != 0) mid += 1;
+
+        ListNode prev = null, curr = a, temp = a;
+
+        // instead of first finding the middle node and then reversing it and then comparing them,
+        // we can do all of it at a time
+        while(curr != null)
+        {
+            count++;
+            temp = temp.next;
+            curr.next = prev;
+            // if count == mid that means we are at the middle node and can start comparing both halves
+            if(count == mid)
+            {
+                // p1 works for odd list size, p2 works for even list size
+                int p1, p2 = 0;
+                p1 = 2 * countCommonElements(prev, temp) + 1;
+
+                if(p1 != n)
+                    p2 = 2 * countCommonElements(curr, temp);
+
+                // if either p1 or p2 count equals the list size, it means the given list is a palindrome
+                // NOTE: we are doubling p1, p2 because the 'countCommonElements' returns only the no. of common elements
+                if(p1 == n || p2 == n) return 1;
+                else break;
+            }
+            prev = curr;
+            curr = temp;
+        }
+        return 0;
+    }
+
+    public int sizeofLL(ListNode a)
+    {
+        int n = 0; ListNode temp = a;
+        while(temp != null) 
+        {
+            n++;
+            temp = temp.next;
+        }
+        return n;
+    }
+
+    // function that counts the common elements in 2 given lists 
+    public int countCommonElements(ListNode a, ListNode b)
+    {
+        int commoncount = 0;
+        while(a != null && b != null)
+        {
+            // increament the count if corresponding elements in both the lists are equal
+            if(a.val == b.val)
+                commoncount++;
+            else break;
+            a = a.next; b = b.next;
+        }
+        return commoncount;
+    }
+}
+
+/// N is input list size
+/// TC = 2 list traversals = 1 time for reverse, 2 times for counting common elements = O(3N) = O(N)
+/// SC = constant extra space = O(1)
