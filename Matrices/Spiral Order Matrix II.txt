@@ -1,0 +1,117 @@
+Q. Spiral Order Matrix II
+
+Problem Description
+Given an integer A, generate a square matrix filled with elements from 1 to A2 in spiral order and return the generated square matrix.
+
+Problem Constraints
+1 <= A <= 1000
+
+Input Format
+First and only argument is integer A
+
+Output Format
+Return a 2-D matrix which consists of the elements added in spiral order.
+
+Example Input
+Input 1:
+1
+Input 2:
+2
+Input 3:
+5
+
+Example Output
+Output 1:
+[ [1] ]
+Output 2:
+[ [1, 2], [4, 3] ]
+Output 3:
+[ [1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 25, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9] ]
+
+Example Explanation
+Explanation 1:
+Only 1 is to be arranged.
+Explanation 2:
+
+1 --> 2
+      |
+      |
+4<--- 3
+
+---------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+public class Solution {
+    public int[][] generateMatrix(int a) {
+        // idea is to traverse the matrix spirally and add elements accordingly i.e.
+        // to traverse the matrix boundary-wise i.e.
+
+        int[][] res = new int[a][a];
+        int n = a, x = 1;
+        if(a == 1)
+        {
+            res[0][0] = x;
+            return res;
+        }
+        
+        // maintain these variables for spiral traversal
+        // initialize top as the topmost row
+        int top = 0;
+        // initialize bottom as the bottom most row
+        int bottom = n-1;
+        // initialize left as the leftmost column
+        int left = 0;
+        // initialize right as the rightmost column
+        int right = n-1;
+
+        while(true)
+        {
+            if(left > right) break;
+            
+            // first completely traverse the top row from left to right and
+            // increment top's value as we are done with that row
+            for(int i = left; i <= right; i++)
+            {
+                res[top][i] = x++;
+            }
+            top++;
+
+            if(top > bottom) break;
+
+            // then traverse the right column from top to bottom and
+            // decreament right's value as we are done with that column
+            for(int i = top; i <= bottom; i++)
+            {
+                res[i][right] = x++;
+            }
+            right--;
+
+            if(left > right) break;
+
+            // then traverse the bottom row from right to left and
+            // decreament bottom's value as we are done with that row
+            for(int i = right; i >= left; i--)
+            {
+                res[bottom][i] = x++;
+            }
+            bottom--;
+
+            if(top > bottom) break;
+
+            // then traverse the left column from bottom to top and
+            // increment left's value as we are done with that column
+            for(int i = bottom; i >= top; i--)
+            {
+                res[i][left] = x++;
+            }
+            left++;
+        }
+
+        return res;
+    }
+}
+
+/// A is input number => decides the matrix size (A^2)
+/// TC = traversing every row, column atmost once = O(A^2)
+/// SC = answer matrix is not considered = O(1)
+
