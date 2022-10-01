@@ -1,0 +1,94 @@
+Q. Longest Palindromic List
+
+Problem Description
+Given a linked list of integers. Find and return the length of the longest palindrome list that exists in that linked list.
+A palindrome list is a list that reads the same backward and forward.
+Expected memory complexity : O(1)
+
+Problem Constraints
+1 <= length of the linked list <= 2000
+1 <= Node value <= 100
+
+Input Format
+The only argument given is head pointer of the linked list.
+
+Output Format
+Return the length of the longest palindrome list.
+
+Example Input
+Input 1:
+ 2 -> 3 -> 3 -> 3
+Input 2:
+ 2 -> 1 -> 2 -> 1 ->  2 -> 2 -> 1 -> 3 -> 2 -> 2
+
+Example Output
+Output 1:
+ 3
+Output 2:
+ 5
+
+Example Explanation
+Explanation 1:
+ 3 -> 3 -> 3 is largest palindromic sublist
+Explanation 2:
+ 2 -> 1 -> 2 -> 1 -> 2 is largest palindromic sublist.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public int solve(ListNode a) 
+    {
+        // idea is to go to every node and traverse to its left & right sides, compare them and find the maximum length palindrome
+        ListNode prev = null, curr = a, temp = a;
+
+        // maxLength to maintain the maximum length palindrome
+        int maxLength = 0;
+
+        // but to compare left & right sides, left side should be reversed
+        // so comparisions, finding maximum lengths are to be done while reversing the list
+        while(curr != null)
+        {
+            temp = temp.next;
+            curr.next = prev;
+
+            // count the palindrome elements including the current element (for odd length)
+            int p1 = 2 * countCommonElements(prev, temp) + 1;
+
+            // count the palindrome elements excluding the current element (for even length)
+            int p2 = 2 * countCommonElements(temp, curr);
+
+            int currMax = Math.max(p1, p2);
+            maxLength = Math.max(maxLength, currMax);
+            prev = curr;
+            curr = temp;
+        }
+        return maxLength;
+    }
+
+    // function that counts the palindrome elements w.r.t given node
+    public int countCommonElements(ListNode a, ListNode b)
+    {
+        int count = 0;
+        while(a != null && b != null)
+        {
+            if(a.val == b.val)
+                count++;
+            else break;
+            a = a.next; b = b.next;
+        }
+        return count;
+    }
+}
+
+/// N is the size of input list
+/// TC = for each node we have to traverse the entire list in worst case = O(N^2)
+/// SC = constant extra space = O(1)
