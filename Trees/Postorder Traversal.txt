@@ -72,4 +72,4 @@ class Solution {
 
 /// N is size of the tree
 /// TC = one tree traversal = O(N)
-/// SC = stack space = O(N)
+/// SC = stack space = O(tree height) = O(H)
