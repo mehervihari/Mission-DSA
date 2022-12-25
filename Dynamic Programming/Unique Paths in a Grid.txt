@@ -1,0 +1,121 @@
+Q. Unique Paths in a Grid
+
+Problem Description
+Given a grid of size n * m, lets assume you are starting at (1,1) and your goal is to reach (n, m). 
+At any instance, if you are on (x, y), you can either go to (x, y + 1) or (x + 1, y).
+Now consider if some obstacles are added to the grids. How many unique paths would there be? 
+An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+
+Problem Constraints
+1 <= n, m <= 100
+A[i][j] = 0 or 1
+
+Input Format
+Firts and only argument A is a 2D array of size n * m.
+
+Output Format
+Return an integer denoting the number of unique paths from (1, 1) to (n, m).
+
+Example Input
+Input 1:
+ A = [
+        [0, 0, 0]
+        [0, 1, 0]
+        [0, 0, 0]
+     ]
+Input 2:
+ A = [
+        [0, 0, 0]
+        [1, 1, 1]
+        [0, 0, 0]
+     ]
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 0
+
+Example Explanation
+Explanation 1:
+ Possible paths to reach (n, m): {(1, 1), (1, 2), (1, 3), (2, 3), (3, 3)} and {(1 ,1), (2, 1), (3, 1), (3, 2), (3, 3)}  
+ So, the total number of unique paths is 2. 
+Explanation 2:
+ It is not possible to reach (n, m) from (1, 1). So, ans is 0.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+public class Solution {
+    // idea is to calculate the uniquepaths to reach (n,m), first calculate the uniquepaths to (n-1,m) & (n, m-1) because
+    // we can go only to right or down but not all the directions
+    // so that uniquepaths of (n, m) = that of (n-1, m) + (n, m-1)
+
+    // dp matrix to store the #uniquepaths of every cell
+    int[][] dp;
+    public int uniquePathsWithObstacles(int[][] a) 
+    {
+        int n = a.length, m = a[0].length;
+        dp = new int[n][m];
+        return upwo(a, n, m);
+    }
+
+    // but here, some cells are blocked, so need to eliminate the paths via those cells
+    int upwo(int[][] a, int n, int m)
+    {
+        // check if starting or ending cell is blocked
+        if(a[0][0] == 1 || a[n-1][m-1] == 1) return 0;
+        if(a[0][0] != 1) dp[0][0] = 1;
+
+        // find the #uniquepaths in entire first column
+        for(int i=1; i<n; i++)
+        {
+            if(a[i][0] == 0)
+            {   
+                // if previous cell is blocked, we can't reach current cell
+                if(a[i-1][0] == 1) continue;
+                // also check the #uniquepaths of the previous cell, it shouldn't be 0
+                else if(dp[i-1][0] != 0) dp[i][0] = 1;
+            }
+        }
+
+        // find the #uniquepaths in entire first row
+        for(int j=1; j<m; j++)
+        {
+            if(a[0][j] == 0)
+            {
+                // if previous cell is blocked, we can't reach current cell
+                if(a[0][j-1] == 1) continue;
+                // also check the #uniquepaths of the previous cell, it shouldn't be 0
+                else if(dp[0][j-1] != 0) dp[0][j] = 1;
+            }
+        }
+
+        // find the #uniquepaths of all the other cells
+        for(int i=1; i<n; i++)
+        {
+            for(int j=1; j<m; j++)
+            {
+                // if current cell is blocked, it's #uniquepaths will remain 0
+                if(a[i][j] != 1)
+                {
+                    // #uniquepaths of current cell will be the addition of #uniquepaths of its left & top cells
+                    int top = 0, left = 0;
+                    
+                    if(a[i-1][j] != 1) top = dp[i-1][j];
+
+                    if(a[i][j-1] != 1) left = dp[i][j-1];
+
+                    dp[i][j] = top + left;
+                }
+            }
+        }
+
+        // return the #uniquepaths to reach the last cell
+        return dp[n-1][m-1];
+    }
+}
+
+/// N x M is the size of the given matrix
+/// TC = one complete matrix traversal = O(N x M)
+/// SC = dp matrix to store the #uniquepaths = O(N x M)

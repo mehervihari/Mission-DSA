@@ -1,0 +1,80 @@
+Q. Sum the Difference
+
+Problem Description
+Given an integer array, A of size N.
+You have to find all possible non-empty subsequences of the array of numbers and then, for each subsequence, 
+find the difference between the largest and smallest numbers in that subsequence. 
+Then add up all the differences to get the number.
+As the number may be large, output the number modulo 1e9 + 7 (1000000007).
+NOTE: Subsequence can be non-contiguous.
+
+Problem Constraints
+1 <= N <= 10000
+1<= A[i] <=1000
+
+Input Format
+First argument is an integer array A.
+
+Output Format
+Return an integer denoting the output.
+
+Example Input
+Input 1:
+A = [1, 2] 
+Input 2:
+A = [1]
+
+Example Output
+Output 1:
+ 1 
+Output 2:
+ 0
+
+Example Explanation
+Explanation 1:
+All possible non-empty subsets are:
+[1]    largest-smallest = 1 - 1 = 0
+[2]    largest-smallest = 2 - 2 = 0
+[1 2]  largest-smallest = 2 - 1 = 1
+Sum of the differences = 0 + 0 + 1 = 1
+So, the resultant number is 1 
+
+Explanation 2:
+ Only 1 subsequence of 1 element is formed.
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Solution Code: (JAVA)
+	public int solve(int[] A) {
+        //naive approach would be to find all the subsequences and then (could sort them and then)
+        //find (max - min) for each one of subsequences and add them all up -> all this would take so much time complexity
+
+        //optimised way is to find: in how many subsequences a number can apprear as a minimum and maximum
+        int mod = 1000000007;
+        int n = A.length;
+        long min = 0; long max = 0;
+
+        //we can see that order doesn't matter here (since we want only min, max in all subsequences), 
+	  //so sort the array to make the work easier
+        Arrays.sort(A);
+
+        for(int i=0; i<n; i++)
+        {
+            //every (n-i-1)th ele will be present as max in 2^(n-i-1 in sorted) subsequences
+            max = (long)((max % mod) + ((Math.pow(2, n-i-1)) * A[n-i-1]) % mod) % mod;
+        }
+
+        for(int i=0; i<n; i++)
+        {
+            //every (i)th ele will be present as min in 2^(length-1-i) subsequences
+            min = (long)((min % mod) + ((Math.pow(2, n-i-1)) * A[i]) % mod) % mod;
+        }
+
+        //adding mod to the difference to handle negative Sum
+        return (int)(max - min + mod) % mod;
+    }
+
+
+///let N be the size of input array
+///TC = time for array traversals = O(N)
+///SC = constant extra space = O(1)
