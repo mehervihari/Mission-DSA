@@ -1,0 +1,89 @@
+Q. Reverse Bits
+
+Problem Description
+Reverse the bits of an 32 bit unsigned integer A.
+
+Problem Constraints
+0 <= A <= 232
+
+Input Format
+First and only argument of input contains an integer A.
+
+Output Format
+Return a single unsigned integer denoting the decimal value of reversed bits.
+
+Example Input
+Input 1:
+
+ 0
+Input 2:
+
+ 3
+
+Example Output
+Output 1:
+
+ 0
+Output 2:
+
+ 3221225472
+
+
+Example Explanation
+Explanation 1:
+
+        00000000000000000000000000000000    
+=>      00000000000000000000000000000000
+Explanation 2:
+
+        00000000000000000000000000000011    
+=>      11000000000000000000000000000000
+
+--------------------------------------------------------------------------------------------------------
+
+Solution code: (JAVA)
+public class Solution {
+	public long reverse(long A) {
+        int size = 32;
+        int[] rev = new int[size];
+        int i = 0; int j = 31;
+        long N = A; long ans = 0;
+
+        // Approach1: is simple, if "i"th bit of A is 1 then it's opposite("j"th) bit in the answer should be 1
+
+        for(i = 0; i < size; i++)
+        {
+            if(((A >> i) & 1l) != 0)
+            {
+                ans |= (1l << (j));
+            }
+            j--;
+        }
+
+        // Approach2: Converting A into binary format and store that in an array in reverse manner
+        // Again convert this array to decimal number by multiplying it with powers of 2
+
+        // while(N != 0 && i < size)
+        // {
+            
+        //     rev[i++] = (int)(N % 2);
+        //     //rem = (int)(N % 2);
+        //     N = N/2;
+        // }
+
+        // long ans = 0;
+        // int mul = 0;
+        // while(j >= 0)
+        // {
+        //     //System.out.print(rev[j] + " ");
+        //     ans += rev[j--] * (long)Math.pow(2, mul);
+        //     mul++;
+        // }
+
+        return ans;
+	}
+}
+
+/// N is the number of bits present in A(input)
+/// TC = N iterations = O(N)
+/// SC = constant extra space used = O(1)
