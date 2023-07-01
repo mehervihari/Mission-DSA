@@ -1,26 +1,45 @@
 package Controllers;
 
 import Models.Game;
+import Models.GameState;
 import Models.Player;
-import winningstrategies.WinningStrategy;
+import exceptions.DuplicateSymbolException;
+import exceptions.MoreThanOneBotException;
+import exceptions.PlayersCountDimensionMismatchException;
+import Strategies.winningstrategies.IWinningStrategy;
 
 import java.util.List;
 
 public class GameController {
-    void startGame(int dimensionOfBoard, List<Player> players,
-                                            List<WinningStrategy> winningStrategies){
-
+    public Game startGame(int dimensionOfBoard, List<Player> players,
+                                            List<IWinningStrategy> winningStrategies)
+            throws DuplicateSymbolException, PlayersCountDimensionMismatchException, MoreThanOneBotException
+    {
+        return Game.getBuilder()
+                .setDimension(dimensionOfBoard)
+                .setPlayers(players)
+                .setWinningStrategies(winningStrategies)
+                .build();
     }
 
-    void makemove(Game game){
-
+    public GameState checkState(Game game){
+        return game.getGameState();
     }
 
-    void checkState(Game game){
-
+    public Player getWinner(Game game){
+        return game.getWinner();
     }
 
-    void undo(Game game){
+    public void printBoard(Game game){
+        game.printBoard();
+    }
 
+    public void makeMove(Game game)
+    {
+        game.makeMove();
+    }
+
+    public void undo(Game game){
+        game.undo();
     }
 }
